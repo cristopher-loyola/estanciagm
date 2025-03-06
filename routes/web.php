@@ -25,10 +25,11 @@ Route::middleware(['auth'])->group(function () {
          ->middleware('can:create-users'); // Aplica el Gate
 });
 
+
 Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users.index');
 });
-
 
 
 require __DIR__.'/auth.php';

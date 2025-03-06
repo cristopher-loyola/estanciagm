@@ -1,7 +1,6 @@
-@extends('layouts.app')
-@vite(['resources/css/app.css','resources/js/app.js'])
-@section('content')
+@extends('layouts.admin')
 
+@section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col md:flex-row gap-4">
         <!-- Sidebar de navegación -->
