@@ -19,6 +19,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Puedes dejar este método vacío si no necesitas registrar nada más.
     }
 }

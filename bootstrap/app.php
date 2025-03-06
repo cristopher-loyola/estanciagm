@@ -11,8 +11,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
+
+    
+        // Middleware para rutas API (opcional)
+        $middleware->api([
+            // \App\Http\Middleware\ApiMiddleware::class,
+        ]);
+    
+        // Middleware personalizado (opcional)
+        // $middleware->append(\App\Http\Middleware\IsAdmin::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+        // Configuración de manejo de excepciones
+    })
+    ->create();
