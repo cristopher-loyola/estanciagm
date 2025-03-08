@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CalendarController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +31,16 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users.index');
 });
+
+
+
+Route::get('/calendar', function () {
+    return view('calendar');
+});
+
+
+Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+
 
 
 require __DIR__.'/auth.php';
