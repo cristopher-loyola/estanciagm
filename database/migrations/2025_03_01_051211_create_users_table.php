@@ -13,8 +13,7 @@ return new class extends Migration {
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable(); // Agrega esta línea
             $table->string('password')->nullable();
-            $table->enum('role', ['admin', 'director', 'empleado', 'honorario']);
-            $table->unsignedBigInteger('id_director')->nullable();
+            $table->enum('role', ['admin', 'director', 'empleado', 'honorario'])->default('empleado');            $table->unsignedBigInteger('id_director')->nullable();
             $table->unsignedBigInteger('id_area')->nullable();
             $table->integer('vacaciones')->default(0);
             $table->integer('permisos')->default(0);
