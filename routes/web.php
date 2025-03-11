@@ -42,5 +42,4 @@ Route::get('/calendar', function () {
 Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
 
 
-
 require __DIR__.'/auth.php';

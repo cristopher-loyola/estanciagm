@@ -16,12 +16,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',  // Para identificar si es admin, director, empleado u honorario
-        'id_director', // Para empleados y honorarios
-        'id_area', // Para directores
+        'role',
+        'id_director',
+        'id_area',
         'vacaciones',
         'permisos',
-        'asistencia', // Solo para honorarios
+        'asistencia',
     ];
 
     protected $hidden = [
@@ -37,43 +37,30 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Un director pertenece a un área
-     */
+    // Relaciones
     public function area(): BelongsTo
     {
         return $this->belongsTo(Area::class, 'id_area');
     }
 
-    /**
-     * Un área tiene muchos directores
-     */
-    public function directores(): HasMany
-    {
-        return $this->hasMany(User::class, 'id_area')->where('role', 'director');
-    }
-
-    /**
-     * Un empleado pertenece a un director
-     */
     public function director(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'id_director')->where('role', 'director');
+        return $this->belongsTo(User::class, 'id_director');
     }
 
-    /**
-     * Un director tiene muchos empleados
-     */
     public function empleados(): HasMany
     {
         return $this->hasMany(User::class, 'id_director')->where('role', 'empleado');
     }
 
-    /**
-     * Un director tiene muchos empleados de honorarios
-     */
     public function honorarios(): HasMany
     {
         return $this->hasMany(User::class, 'id_director')->where('role', 'honorario');
+    }
+
+    // Nuevo método para directores
+    public function scopeDirectores($query)
+    {
+        return $query->where('role', 'director');
     }
 }

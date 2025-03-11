@@ -1,7 +1,10 @@
+<?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Area extends Model
 {
@@ -9,8 +12,13 @@ class Area extends Model
 
     protected $fillable = ['nombre'];
 
-    public function directores()
+    public function users(): HasMany
     {
-        return $this->hasMany(Director::class, 'id_Area');
+        return $this->hasMany(User::class, 'id_area');
+    }
+
+    public function directores(): HasMany
+    {
+        return $this->hasMany(User::class, 'id_area')->where('role', 'director');
     }
 }

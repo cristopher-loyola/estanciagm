@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
+            {{ __('Panel de ') }} {{ Auth::user()->area->nombre }}
         </h2>
     </x-slot>
 
@@ -9,7 +9,11 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
+                    {{ __("¡Bienvenido a tu panel de control!") }}
+                    <p class="mt-2 text-sm text-gray-500">
+                        Estás registrado en el área de: 
+                        <span class="font-medium">{{ Auth::user()->area->nombre }}</span>
+                    </p>
                 </div>
             </div>
         </div>
