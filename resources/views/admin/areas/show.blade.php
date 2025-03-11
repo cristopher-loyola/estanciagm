@@ -1,8 +1,7 @@
 @extends('layouts.admin')
 
 @section('content')
-   
-   <x-slot name="header">
+    <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Empleados del área de {{ $area->nombre }}
         </h2>
@@ -10,48 +9,57 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nombre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rol</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Director</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($users as $user)
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $user->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $user->email }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                        {{ $user->role === 'admin' ? 'bg-red-100 text-red-800' : 
-                                           ($user->role === 'director' ? 'bg-blue-100 text-blue-800' : 
-                                           'bg-green-100 text-green-800') }}">
-                                        {{ ucfirst($user->role) }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    {{ $user->director->name ?? 'N/A' }}
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                                    No hay empleados en esta área
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    <div class="mt-4">
-                        {{ $users->links() }}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                @forelse($users as $user)
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                    <div class="p-6 flex flex-col h-full">
+                        <!-- Círculo con inicial -->
+                        <div class="mx-auto mb-4 w-20 h-20 rounded-full bg-gradient-to-r 
+                            @if($user->role === 'admin') from-red-400 to-red-600
+                            @elseif($user->role === 'director') from-blue-400 to-blue-600
+                            @else from-green-400 to-green-600 @endif
+                            flex items-center justify-center">
+                            <span class="text-white text-3xl font-black">
+                                {{ strtoupper(substr($user->name, 0, 1)) }}
+                            </span>
+                        </div>
+                        
+                        <!-- Nombre y Rol -->
+                        <div class="text-center mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800">{{ $user->name }}</h3>
+                            <span class="text-sm 
+                                @if($user->role === 'admin') text-red-600
+                                @elseif($user->role === 'director') text-blue-600
+                                @else text-green-600 @endif">
+                                {{ ucfirst($user->role) }}
+                            </span>
+                        </div>
+                        
+                        <!-- Detalles -->
+                        <div class="space-y-2 mb-6">
+                            <p class="text-center text-gray-600 text-sm">
+                                <i class="fas fa-envelope mr-2"></i>{{ $user->email }}
+                            </p>
+                            <p class="text-center text-gray-600 text-sm">
+                                <i class="fas fa-user-tie mr-2"></i>
+                                {{ $user->director->name ?? 'N/A' }}
+                            </p>
+                        </div>
                     </div>
                 </div>
+                @empty
+                <div class="col-span-full p-6 bg-blue-50 rounded-xl">
+                    <p class="text-center text-blue-800">
+                        No hay empleados en esta área
+                    </p>
+                </div>
+                @endforelse
+            </div>
+            
+            <!-- Paginación -->
+            <div class="mt-6">
+                {{ $users->links() }}
             </div>
         </div>
     </div>
-    @endsection
+@endsection
