@@ -63,9 +63,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/admin/areas', [AreaController::class, 'index'])->name('admin.areas.index');
 });
 
-
-
-
+Route::get('/admin/crear-usuario', [UserController::class, 'create'])->name('admin.users.create');
+Route::post('/admin/guardar-usuario', [UserController::class, 'store'])->name('admin.users.store');
 
 require __DIR__.'/auth.php';
 
