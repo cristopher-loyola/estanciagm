@@ -101,7 +101,11 @@ Route::get('/calendar', [CalendarController::class, 'index'])
     ->name('calendar')
     ->middleware('auth');
 
+    Route::resource('vacations', VacationController::class)->only([
+        'index', 'store', 'update', 'destroy'
+    ]);
 
+    
     
 require __DIR__.'/auth.php';
 

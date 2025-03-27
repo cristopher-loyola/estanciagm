@@ -10,6 +10,14 @@ use Carbon\Carbon;
 class VacationController extends Controller
 {
 
+public function index()
+{
+    $vacations = auth()->user()->vacations()
+                    ->orderBy('start_date', 'desc')
+                    ->get();
+    
+    return view('calendar', compact('vacations')); 
+}
 public function store(Request $request)
 {
     $validated = $request->validate([
@@ -72,5 +80,21 @@ public function reject(Vacation $vacation)
     ));
 
     return back()->with('success', 'Solicitud de vacaciones rechazada');
+}
+public function update(Request $request, Vacation $vacation)
+{
+    // Solo permitir editar si está pendiente
+    if ($vacation->status != 'pendiente') {
+        abort(403, 'No puedes editar una solicitud ya procesada');
+    }
+
+    $validated = $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+    ]);
+
+    $vacation->update($validated);
+
+    return back()->with('success', 'Solicitud actualizada correctamente');
 }
 }
