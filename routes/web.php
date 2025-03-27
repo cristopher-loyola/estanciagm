@@ -6,6 +6,12 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\VacationController;
+
+
+
+Route::post('/vacations/store', [VacationController::class, 'store'])->name('vacations.store');
+
 
 
 Route::get('/', function () {
@@ -65,6 +71,16 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
 
 Route::get('/admin/crear-usuario', [UserController::class, 'create'])->name('admin.users.create');
 Route::post('/admin/guardar-usuario', [UserController::class, 'store'])->name('admin.users.store');
+
+
+
+Route::middleware(['auth', 'admin'])->group(function () {
+    Route::post('/vacations/{vacation}/approve', [VacationController::class, 'approve'])->name('vacations.approve');
+    Route::post('/vacations/{vacation}/reject', [VacationController::class, 'reject'])->name('vacations.reject');
+});
+
+Route::get('/admin/vacations', [VacationController::class, 'index'])->name('vacations.index')->middleware('admin');
+
 
 require __DIR__.'/auth.php';
 

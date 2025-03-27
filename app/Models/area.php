@@ -21,4 +21,13 @@ class Area extends Model
     {
         return $this->hasMany(User::class, 'id_area')->where('role', 'director');
     }
+
+    public function show($id)
+{
+    $area = Area::findOrFail($id);
+    $users = User::where('id_area', $area->id)->with('vacations')->get();
+
+    return view('admin.areas.show', compact('area', 'users'));
+}
+
 }

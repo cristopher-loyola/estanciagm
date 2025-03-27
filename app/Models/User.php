@@ -63,4 +63,17 @@ class User extends Authenticatable
     {
         return $query->where('role', 'director');
     }
+    public function vacationRequests() {
+        return $this->hasMany(VacationRequest::class);
+    }
+
+    public function vacations()
+{
+    return $this->hasMany(Vacation::class, 'user_id');
 }
+
+
+
+    
+}
+
