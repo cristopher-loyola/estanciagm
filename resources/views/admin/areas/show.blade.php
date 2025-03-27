@@ -57,6 +57,23 @@
                                     <p><strong>Inicio:</strong> {{ $vacation->start_date }}</p>
                                     <p><strong>Fin:</strong> {{ $vacation->end_date }}</p>
                                     <p><strong>Estado:</strong> {{ ucfirst($vacation->status) }}</p>
+                                    
+                                    @if($vacation->status === 'pendiente')
+                                    <div class="mt-2 flex justify-center space-x-2">
+                                        <form action="{{ route('vacations.approve', $vacation) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-700 transition-colors">
+                                                Aprobar
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('vacations.reject', $vacation) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="px-3 py-1 bg-red-600 text-white text-xs rounded-md hover:bg-red-700 transition-colors">
+                                                Rechazar
+                                            </button>
+                                        </form>
+                                    </div>
+                                    @endif
                                 </div>
                             @empty
                                 <p class="text-gray-500">No ha solicitado vacaciones.</p>

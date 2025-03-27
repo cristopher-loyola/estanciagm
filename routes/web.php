@@ -81,7 +81,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 Route::get('/admin/vacations', [VacationController::class, 'index'])->name('vacations.index')->middleware('admin');
 
-
+Route::post('/vacations/{vacation}/approve', [VacationController::class, 'approve'])->name('vacations.approve');
+Route::post('/vacations/{vacation}/reject', [VacationController::class, 'reject'])->name('vacations.reject');
 require __DIR__.'/auth.php';
 
 
