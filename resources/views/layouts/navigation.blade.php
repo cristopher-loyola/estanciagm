@@ -144,6 +144,12 @@
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
+
+                    <a href="{{ $notification->data['url'] }}" 
+   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 {{ $notification->unread() ? 'bg-blue-50' : '' }}"
+   @click="markAsRead('{{ $notification->id }}')">
+    <!-- ... -->
+</a>
                 </form>
             </div>
         </div>

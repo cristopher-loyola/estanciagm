@@ -95,6 +95,14 @@ Route::post('/notifications/{notification}/mark-as-read', function ($notificatio
     Auth::user()->notifications()->where('id', $notificationId)->update(['read_at' => now()]);
     return response()->json(['success' => true]);
 })->middleware('auth')->name('notifications.markAsRead');
+
+
+Route::get('/calendar', [CalendarController::class, 'index'])
+    ->name('calendar')
+    ->middleware('auth');
+
+
+    
 require __DIR__.'/auth.php';
 
 

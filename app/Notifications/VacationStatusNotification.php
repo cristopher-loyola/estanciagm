@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class VacationStatusNotification extends Notification
@@ -12,29 +13,39 @@ class VacationStatusNotification extends Notification
 
     protected $vacation;
     protected $status;
+    protected $url;
 
-    public function __construct($vacation, $status)
+    public function __construct($vacation, $status, $url)
     {
         $this->vacation = $vacation;
         $this->status = $status;
+        $this->url = $url;
     }
 
+    // Método REQUERIDO: especifica los canales de notificación
     public function via($notifiable)
     {
-        return ['database']; // Solo notificación en base de datos
+        return ['database', 'mail']; // Puedes usar uno o ambos
     }
 
-    public function toArray($notifiable)
+    // Método para notificaciones en la base de datos
+    public function toDatabase($notifiable)
     {
         return [
             'vacation_id' => $this->vacation->id,
-            'start_date' => $this->vacation->start_date,
-            'end_date' => $this->vacation->end_date,
             'status' => $this->status,
-            'message' => $this->status == 'aprobado'
-                ? '¡Tus vacaciones han sido aprobadas!'
-                : 'Tus vacaciones han sido rechazadas',
-            'url' => '/vacations' // Ruta para redirigir al hacer clic
+            'message' => "Tu solicitud de vacaciones ha sido {$this->status}",
+            'url' => $this->url,
         ];
+    }
+
+    // Método para notificaciones por email
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            ->subject("Estado de tus vacaciones: {$this->status}")
+            ->line("Tu solicitud de vacaciones ha sido {$this->status}.")
+            ->action('Ver calendario', $this->url)
+            ->line('¡Gracias por usar nuestro sistema!');
     }
 }

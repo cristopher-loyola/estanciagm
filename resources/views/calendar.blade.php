@@ -9,6 +9,30 @@
         <!-- Calendario -->
         <div id="calendar" class="bg-white shadow-md rounded-lg p-6 mb-6"></div> 
 
+        @isset($highlight)
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(isset($highlight['start']) && isset($highlight['end']))
+            const start = new Date('{{ $highlight['start']->format('Y-m-d') }}');
+            const end = new Date('{{ $highlight['end']->format('Y-m-d') }}');
+            
+            if (!isNaN(start.getTime()) && !isNaN(end.getTime())) {
+                if (typeof calendar !== 'undefined') {
+                    calendar.addEvent({
+                        title: 'Tus vacaciones',
+                        start: start,
+                        end: end,
+                        color: '#3b82f6',
+                        allDay: true
+                    });
+                    calendar.gotoDate(start);
+                }
+            }
+            @endif
+        });
+        </script>
+        @endisset
+
         <!-- Formulario de solicitud de vacaciones -->
         <div class="bg-white shadow-md rounded-lg p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-4">Solicitar Vacaciones</h2>
@@ -31,6 +55,36 @@
             </form>
         </div>
     </div>
+    <div class="calendar-container">
+    <!-- Tu calendario existente -->
+
+    @if(!empty($selectedRange) && isset($selectedRange['start']) && isset($selectedRange['end']))
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Verificar que las fechas sean válidas
+        const startDate = new Date('{{ $selectedRange['start']->format('Y-m-d') }}');
+        const endDate = new Date('{{ $selectedRange['end']->format('Y-m-d') }}');
+        
+        if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+            // Implementa tu lógica para resaltar fechas aquí
+            console.log('Mostrando rango:', startDate, 'a', endDate);
+            
+            // Ejemplo con FullCalendar:
+            if (typeof calendar !== 'undefined') {
+                calendar.addEvent({
+                    title: 'Tus vacaciones',
+                    start: startDate,
+                    end: endDate,
+                    color: '#3b82f6',
+                    allDay: true
+                });
+                calendar.gotoDate(startDate);
+            }
+        }
+    });
+    </script>
+    @endif
+</div>
 
     @vite(['resources/js/app.js'])
 @endsection
