@@ -18,4 +18,21 @@
             </div>
         </div>
     </div>
+
+    @if(auth()->user()->unreadNotifications->count())
+<div class="notification-bell">
+    <i class="fas fa-bell"></i>
+    <span class="notification-count">{{ auth()->user()->unreadNotifications->count() }}</span>
+</div>
+@endif
+
+@foreach(auth()->user()->notifications as $notification)
+<div class="notification-item {{ $notification->unread() ? 'unread' : '' }}">
+    <p>{{ $notification->data['message'] }}</p>
+    <small>{{ $notification->created_at->diffForHumans() }}</small>
+    @if($notification->unread())
+    <a href="{{ route('notifications.markAsRead', $notification) }}">Marcar como leída</a>
+    @endif
+</div>
+@endforeach
 </x-app-layout>

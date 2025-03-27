@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Vacation;
 use Illuminate\Http\Request;
+use App\Notifications\VacationStatusNotification;
 
 class VacationController extends Controller
 {
@@ -23,15 +24,25 @@ class VacationController extends Controller
     
         return back()->with('success', 'Solicitud de vacaciones creada correctamente');
     }
-    public function approve(Vacation $vacation)
-{
-    $vacation->update(['status' => 'aprobado']);
-    return back()->with('success', 'Vacaciones aprobadas correctamente');
-}
+   
 
-public function reject(Vacation $vacation)
-{
-    $vacation->update(['status' => 'rechazado']);
-    return back()->with('success', 'Vacaciones rechazadas correctamente');
-}
+    public function approve(Vacation $vacation)
+    {
+        $vacation->update(['status' => 'aprobado']);
+        
+        // Enviar notificación solo en plataforma
+        $vacation->user->notify(new VacationStatusNotification($vacation, 'aprobado'));
+        
+        return back()->with('success', 'Vacaciones aprobadas correctamente');
+    }
+    
+    public function reject(Vacation $vacation)
+    {
+        $vacation->update(['status' => 'rechazado']);
+        
+        // Enviar notificación solo en plataforma
+        $vacation->user->notify(new VacationStatusNotification($vacation, 'rechazado'));
+        
+        return back()->with('success', 'Vacaciones rechazadas correctamente');
+    }
 }

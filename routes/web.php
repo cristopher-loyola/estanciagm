@@ -83,6 +83,18 @@ Route::get('/admin/vacations', [VacationController::class, 'index'])->name('vaca
 
 Route::post('/vacations/{vacation}/approve', [VacationController::class, 'approve'])->name('vacations.approve');
 Route::post('/vacations/{vacation}/reject', [VacationController::class, 'reject'])->name('vacations.reject');
+
+
+
+Route::post('/notifications/{notification}/mark-as-read', function ($notificationId) {
+    Auth::user()->notifications()->where('id', $notificationId)->update(['read_at' => now()]);
+    return response()->json(['success' => true]);
+})->middleware('auth')->name('notifications.markAsRead');
+
+Route::post('/notifications/{notification}/mark-as-read', function ($notificationId) {
+    Auth::user()->notifications()->where('id', $notificationId)->update(['read_at' => now()]);
+    return response()->json(['success' => true]);
+})->middleware('auth')->name('notifications.markAsRead');
 require __DIR__.'/auth.php';
 
 
