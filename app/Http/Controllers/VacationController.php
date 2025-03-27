@@ -44,43 +44,6 @@ public function store(Request $request)
     return back()->with('success', 'Solicitud de vacaciones enviada');
 }
 
-    public function approve(Vacation $vacation)
-{
-    $vacation->update(['status' => 'aprobado']);
-    
-    $url = route('calendar', [
-        'highlight_start' => $vacation->start_date->format('Y-m-d'),
-        'highlight_end' => $vacation->end_date->format('Y-m-d')
-    ]);
-
-    $vacation->user->notify(new VacationStatusNotification(
-        $vacation, 
-        'aprobado',
-        $url
-    ));
-
-    return back()->with('success', 'Vacaciones aprobadas');
-}
-public function reject(Vacation $vacation)
-{
-    // Actualiza el estado a "rechazado"
-    $vacation->update(['status' => 'rechazado']);
-    
-    // Prepara la URL para la notificación
-    $url = route('calendar', [
-        'highlight_start' => $vacation->start_date->format('Y-m-d'),
-        'highlight_end' => $vacation->end_date->format('Y-m-d')
-    ]);
-
-    // Envía notificación al usuario
-    $vacation->user->notify(new VacationStatusNotification(
-        $vacation, 
-        'rechazado',
-        $url
-    ));
-
-    return back()->with('success', 'Solicitud de vacaciones rechazada');
-}
 public function update(Request $request, Vacation $vacation)
 {
     // Solo permitir editar si está pendiente
@@ -96,5 +59,24 @@ public function update(Request $request, Vacation $vacation)
     $vacation->update($validated);
 
     return back()->with('success', 'Solicitud actualizada correctamente');
+}
+
+// VacationController.php
+public function approve(Vacation $vacation)
+{
+    $vacation->update(['status' => 'aprobado']);
+    return back()->with('success', 'Solicitud aprobada correctamente');
+}
+
+public function reject(Vacation $vacation)
+{
+    $vacation->update(['status' => 'rechazado']);
+    return back()->with('success', 'Solicitud rechazada correctamente');
+}
+
+public function destroy(Vacation $vacation)
+{
+    $vacation->delete();
+    return back()->with('success', 'Registro eliminado permanentemente');
 }
 }

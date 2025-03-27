@@ -98,15 +98,30 @@ Route::post('/notifications/{notification}/mark-as-read', function ($notificatio
 
 
 Route::get('/calendar', [CalendarController::class, 'index'])
-    ->name('calendar')
+->name('calendar')->middleware('auth');
+
+
+Route::delete('/vacations/{vacation}', [VacationController::class, 'destroy'])
+    ->name('vacations.destroy')
     ->middleware('auth');
-
-    Route::resource('vacations', VacationController::class)->only([
-        'index', 'store', 'update', 'destroy'
-    ]);
-
     
+
+
+
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    // Aprobar vacaciones
+    Route::post('/vacations/{vacation}/approve', [VacationController::class, 'approve'])
+         ->name('vacations.approve');
     
+    // Rechazar vacaciones
+    Route::post('/vacations/{vacation}/reject', [VacationController::class, 'reject'])
+         ->name('vacations.reject');
+    
+    // Eliminar vacaciones
+    Route::delete('/vacations/{vacation}', [VacationController::class, 'destroy'])
+         ->name('vacations.destroy');
+});
 require __DIR__.'/auth.php';
 
 

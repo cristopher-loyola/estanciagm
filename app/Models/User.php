@@ -41,9 +41,10 @@ class User extends Authenticatable
     // Relaciones
     public function area(): BelongsTo
     {
-        return $this->belongsTo(Area::class, 'id_area');
+        return $this->belongsTo(Area::class, 'id_area')->withDefault([
+            'nombre' => 'Sin área asignada'
+        ]);
     }
-
     public function director(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id_director');

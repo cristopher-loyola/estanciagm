@@ -32,7 +32,7 @@
                         <i class="fas fa-bell text-lg"></i>
                         @auth
                             @if(auth()->user()->unreadNotifications->count() > 0)
-                            <span class="absolute top-0 right-0 inline-block w-5 h-5 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full text-xs text-white text-center">
+                            <span class="notification-badge absolute top-0 right-0 inline-block w-5 h-5 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full text-xs text-white text-center">
                                 {{ auth()->user()->unreadNotifications->count() }}
                             </span>
                             @endif
@@ -55,7 +55,7 @@
                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 {{ $notification->unread() ? 'bg-blue-50' : '' }}"
                                    @click="markAsRead('{{ $notification->id }}')">
                                     <div class="flex justify-between">
-                                        <span>{{ $notification->data['message'] }}</span>
+                                        <span>{{ $notification->data['message'] ?? 'Nueva notificación' }}</span>
                                         @if($notification->unread())
                                         <span class="text-xs text-blue-500">Nuevo</span>
                                         @endif
@@ -137,6 +137,18 @@
                 <x-responsive-nav-link :href="route('profile.edit')">
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
+                
+                <!-- Notificaciones en móvil -->
+                @auth
+                    @foreach(auth()->user()->unreadNotifications as $notification)
+                        <a href="{{ $notification->data['url'] ?? '#' }}" 
+                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 bg-blue-50"
+                           @click="markAsRead('{{ $notification->id }}')">
+                            {{ $notification->data['message'] ?? 'Nueva notificación' }}
+                        </a>
+                    @endforeach
+                @endauth
+                
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <x-responsive-nav-link :href="route('logout')"
@@ -144,12 +156,6 @@
                                         this.closest('form').submit();">
                         {{ __('Log Out') }}
                     </x-responsive-nav-link>
-
-                    <a href="{{ $notification->data['url'] }}" 
-   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 {{ $notification->unread() ? 'bg-blue-50' : '' }}"
-   @click="markAsRead('{{ $notification->id }}')">
-    <!-- ... -->
-</a>
                 </form>
             </div>
         </div>
@@ -157,32 +163,44 @@
 </nav>
 
 <script>
-// Función para marcar como leída (compatible con Alpine)
+// Función mejorada para marcar como leída
 function markAsRead(notificationId) {
     fetch(`/notifications/${notificationId}/mark-as-read`, {
         method: 'POST',
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
         }
     }).then(response => {
         if(response.ok) {
-            // Actualizar contador de notificaciones
-            const badge = document.querySelector('.notification-badge');
-            if(badge) {
-                const count = parseInt(badge.textContent) - 1;
-                badge.textContent = count > 0 ? count : '';
-                if(count <= 0) badge.remove();
+            // Actualizar contador en desktop
+            const desktopBadge = document.querySelector('.notification-badge');
+            if(desktopBadge) {
+                const count = parseInt(desktopBadge.textContent) - 1;
+                if(count > 0) {
+                    desktopBadge.textContent = count;
+                } else {
+                    desktopBadge.remove();
+                }
             }
             
-            // Actualizar el estilo de la notificación
-            const notificationElement = document.querySelector(`a[onclick*="${notificationId}"]`);
-            if(notificationElement) {
-                notificationElement.classList.remove('bg-blue-50');
-                const newBadge = notificationElement.querySelector('.text-blue-500');
+            // Actualizar notificación en mobile
+            const mobileNotification = document.querySelector(`a[onclick*="markAsRead('${notificationId}')"]`);
+            if(mobileNotification) {
+                mobileNotification.classList.remove('bg-blue-50');
+            }
+            
+            // Actualizar notificación en desktop
+            const desktopNotification = document.querySelector(`a[onclick*="markAsRead('${notificationId}')"]`);
+            if(desktopNotification) {
+                desktopNotification.classList.remove('bg-blue-50');
+                const newBadge = desktopNotification.querySelector('.text-blue-500');
                 if(newBadge) newBadge.remove();
             }
         }
+    }).catch(error => {
+        console.error('Error:', error);
     });
 }
 
