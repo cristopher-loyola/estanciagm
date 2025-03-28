@@ -11,15 +11,17 @@ class Vacation extends Model
 
     protected $fillable = ['user_id', 'start_date', 'end_date', 'status'];
     
-    // Añade esto para convertir automáticamente las fechas a Carbon
+    protected $dates = ['start_date', 'end_date']; // Para Laravel < 8
+    // O para Laravel 8+:
     protected $casts = [
-        'start_date' => 'date:Y-m-d',
-        'end_date' => 'date:Y-m-d',
+        'start_date' => 'datetime',
+        'end_date' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
     
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
 }

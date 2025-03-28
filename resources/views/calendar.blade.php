@@ -21,25 +21,26 @@
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Solicitar Nuevas Vacaciones</h2>
                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Recuerda que solo son 10 dias habiles por cada 6 meses</h3>
-                <form action="{{ route('vacations.store') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900">Fecha de inicio</label>
-                            <input type="date" name="start_date" id="start_date" required
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-                        <div>
-                            <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">Fecha de fin</label>
-                            <input type="date" name="end_date" id="end_date" required
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-                    </div>
-                    <button type="submit" 
-                            class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-lg transition-all">
-                        <i class="fas fa-paper-plane mr-2"></i> Enviar Solicitud
-                    </button>
-                </form>
+               <!-- Formulario de solicitud -->
+<div class="bg-white rounded-xl shadow-md p-6">
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Solicitar Vacaciones</h2>
+    <form action="{{ route('vacations.store') }}" method="POST">
+        @csrf
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label>Fecha de inicio</label>
+                <input type="date" name="start_date" required class="w-full p-2 border rounded">
+            </div>
+            <div>
+                <label>Fecha de fin</label>
+                <input type="date" name="end_date" required class="w-full p-2 border rounded">
+            </div>
+        </div>
+        <button type="submit" class="bg-blue-500 text-white p-2 rounded">
+            Enviar Solicitud
+        </button>
+    </form>
+</div>
             </div>
         </div>
 
@@ -99,18 +100,11 @@
                                     @endif
                                     
                                     <!-- Botón Eliminar -->
-                                    <form method="POST" action="{{ route('vacations.destroy', $vacation) }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                                onclick="return confirm('¿Estás seguro de eliminar esta solicitud?')"
-                                                class="p-1.5 text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 rounded-lg transition-all"
-                                                title="Eliminar solicitud">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                            </svg>
-                                        </button>
-                                    </form>
+                                    <form action="{{ route('vacations.destroy', $vacation->id) }}" method="POST">
+    @csrf
+    @method('DELETE')
+    <button type="submit">Eliminar</button>
+</form>
                                 </div>
                             </div>
                             
@@ -142,33 +136,26 @@
             <div class="p-6">
                 <h3 class="text-lg font-semibold text-gray-800 mb-4">Editar Solicitud</h3>
                 <template x-if="vacation">
-                    <form :action="`/vacations/${vacation.id}`" method="POST">
-                        @csrf
-                        @method('PUT')
-                        
-                        <div class="mb-4">
-                            <label class="block mb-2 text-sm font-medium text-gray-900">Fecha inicio</label>
-                            <input type="date" name="start_date" x-model="vacation.start_date"
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-                        
-                        <div class="mb-4">
-                            <label class="block mb-2 text-sm font-medium text-gray-900">Fecha fin</label>
-                            <input type="date" name="end_date" x-model="vacation.end_date"
-                                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                        </div>
-                        
-                        <div class="flex justify-end space-x-3 pt-4">
-                            <button type="button" @click="open = false" 
-                                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
-                                Cancelar
-                            </button>
-                            <button type="submit" 
-                                    class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300">
-                                Guardar Cambios
-                            </button>
-                        </div>
-                    </form>
+                <form action="{{ route('vacations.store') }}" method="POST" class="space-y-4" id="vacationForm">
+    @csrf
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label for="start_date" class="block mb-2 text-sm font-medium text-gray-900">Fecha de inicio</label>
+            <input type="date" name="start_date" id="start_date" required
+                   min="{{ now()->format('Y-m-d') }}"
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        </div>
+        <div>
+            <label for="end_date" class="block mb-2 text-sm font-medium text-gray-900">Fecha de fin</label>
+            <input type="date" name="end_date" id="end_date" required
+                   class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
+        </div>
+    </div>
+    <button type="submit" 
+            class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-lg transition-all">
+        <i class="fas fa-paper-plane mr-2"></i> Enviar Solicitud
+    </button>
+</form>
                 </template>
             </div>
         </div>
@@ -208,6 +195,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     @endif
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('vacationForm');
+    const startDate = document.getElementById('start_date');
+    const endDate = document.getElementById('end_date');
+    
+    // Actualizar fecha mínima de end_date cuando cambia start_date
+    startDate.addEventListener('change', function() {
+        endDate.min = this.value;
+    });
+    
+    // Validar fechas antes de enviar
+    form.addEventListener('submit', function(e) {
+        if (new Date(endDate.value) < new Date(startDate.value)) {
+            e.preventDefault();
+            alert('La fecha de fin debe ser posterior a la fecha de inicio');
+            return false;
+        }
+        
+        // Validar días hábiles (10 días máximo)
+        const start = new Date(startDate.value);
+        const end = new Date(endDate.value);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        
+        if (diffDays > 10) {
+            e.preventDefault();
+            alert('Solo puedes solicitar máximo 10 días hábiles de vacaciones');
+            return false;
+        }
+        
+        return true;
+    });
 });
 </script>
 @endisset

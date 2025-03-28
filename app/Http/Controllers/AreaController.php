@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Area;
 use Illuminate\Http\Request;
+use App\Models\Vacation;
+use App\Models\User;    // Importación para el modelo User
+
 
 class AreaController extends Controller
 {
@@ -17,14 +20,17 @@ class AreaController extends Controller
     }
     
 
-    // Mostrar empleados de un área específica
     public function show(Area $area)
     {
-        $users = $area->users()->with('director')->paginate(10);
-        return view('admin.areas.show', compact('area', 'users'));
+        // Paginar los resultados en lugar de obtenerlos todos
+        $vacations = Vacation::whereHas('user', function($query) use ($area) {
+                        $query->where('id_area', $area->id);
+                     })
+                     ->orderBy('created_at', 'desc')
+                     ->paginate(10); // 10 elementos por página
+        
+        return view('admin.areas.show', compact('area', 'vacations'));
     }
-
-    
 
     /**
      * Show the form for creating a new resource.

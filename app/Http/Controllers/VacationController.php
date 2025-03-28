@@ -4,79 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\Vacation;
 use Illuminate\Http\Request;
-use App\Notifications\VacationStatusNotification;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth; // Añade esta línea
+
 
 class VacationController extends Controller
+
 {
-
-public function index()
-{
-    $vacations = auth()->user()->vacations()
-                    ->orderBy('start_date', 'desc')
-                    ->get();
-    
-    return view('calendar', compact('vacations')); 
-}
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date',
-    ]);
-
-    $vacation = Vacation::create([
-        'user_id' => auth()->id(),
-        'start_date' => Carbon::parse($validated['start_date']),
-        'end_date' => Carbon::parse($validated['end_date']),
-        'status' => 'pendiente'
-    ]);
-
-    auth()->user()->notify(new VacationStatusNotification(
-        $vacation,
-        'pendiente',
-        route('calendar', [
-            'highlight_start' => $vacation->start_date->format('Y-m-d'),
-            'highlight_end' => $vacation->end_date->format('Y-m-d')
-        ])
-    ));
-
-    return back()->with('success', 'Solicitud de vacaciones enviada');
-}
-
-public function update(Request $request, Vacation $vacation)
-{
-    // Solo permitir editar si está pendiente
-    if ($vacation->status != 'pendiente') {
-        abort(403, 'No puedes editar una solicitud ya procesada');
+    public function index()
+    {
+        $vacations = Auth::user()->vacations()->orderBy('start_date', 'desc')->get();
+        return view('calendar', compact('vacations'));
     }
 
-    $validated = $request->validate([
-        'start_date' => 'required|date',
-        'end_date' => 'required|date|after_or_equal:start_date',
-    ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date'
+        ]);
 
-    $vacation->update($validated);
+        Vacation::create([
+            'user_id' => Auth::id(), // Usando el facade Auth
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'status' => 'pendiente'
+        ]);
 
-    return back()->with('success', 'Solicitud actualizada correctamente');
-}
+        return back()->with('success', 'Solicitud creada');
+    }
 
-// VacationController.php
-public function approve(Vacation $vacation)
-{
-    $vacation->update(['status' => 'aprobado']);
-    return back()->with('success', 'Solicitud aprobada correctamente');
-}
+    public function destroy(Vacation $vacation)
+    {
+        $vacation->delete();
+        return back()->with('success', 'Solicitud eliminada');
+    }
+   
+    public function approve($id)
+    {
+        $vacation = Vacation::findOrFail($id);
+        $vacation->status = 'aprobado'; // Usa el valor exacto que espera tu BD
+        $vacation->save();
+        
+        return back()->with('success', 'Vacaciones aprobadas');
+    }
 
-public function reject(Vacation $vacation)
-{
-    $vacation->update(['status' => 'rechazado']);
-    return back()->with('success', 'Solicitud rechazada correctamente');
-}
+    public function reject($id)
+    {
+        $vacation = Vacation::findOrFail($id);
+        $vacation->status = 'rechazado'; // Usa el valor exacto que espera tu BD
+        $vacation->save();
+        
+        return back()->with('success', 'Vacaciones rechazadas');
+    }
 
-public function destroy(Vacation $vacation)
-{
-    $vacation->delete();
-    return back()->with('success', 'Registro eliminado permanentemente');
-}
+
+
+
+  
 }
