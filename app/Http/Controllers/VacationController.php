@@ -42,21 +42,26 @@ class VacationController extends Controller
     public function approve($id)
     {
         $vacation = Vacation::findOrFail($id);
-        $vacation->status = 'aprobado'; // Usa el valor exacto que espera tu BD
+        $vacation->status = 'aprobado';
         $vacation->save();
+        
+        // Notificación simple (solo database)
+        $vacation->user->notify(new \App\Notifications\VacationStatusNotification('aprobado'));
         
         return back()->with('success', 'Vacaciones aprobadas');
     }
-
+    
     public function reject($id)
     {
         $vacation = Vacation::findOrFail($id);
-        $vacation->status = 'rechazado'; // Usa el valor exacto que espera tu BD
+        $vacation->status = 'rechazado';
         $vacation->save();
+        
+        // Notificación simple (solo database)
+        $vacation->user->notify(new \App\Notifications\VacationStatusNotification('rechazado'));
         
         return back()->with('success', 'Vacaciones rechazadas');
     }
-
 
 
 
