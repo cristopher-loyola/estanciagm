@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\VacationController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth;
+use App\Http\Controllers\PermisoEconomicoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,4 +87,10 @@ Route::post('/vacations/{id}/approve', [VacationController::class, 'approve'])
 
 Route::post('/vacations/{id}/reject', [VacationController::class, 'reject'])
      ->name('vacations.reject');
+
+
+     Route::middleware('auth')->group(function () {
+         Route::get('/permisos-economicos', [PermisoEconomicoController::class, 'index'])->name('permisos-economicos.index');
+         Route::post('/permisos-economicos', [PermisoEconomicoController::class, 'store'])->name('permisos-economicos.store');
+     });
 });
