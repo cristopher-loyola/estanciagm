@@ -25,4 +25,8 @@ class PermisoEconomico extends Model
         'fecha_inicio' => 'date',
         'fecha_fin' => 'date',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);  // Relación con la tabla users
+    }
 }

@@ -21,6 +21,10 @@
                     <x-nav-link :href="route('admin.areas.index')" :active="request()->routeIs('admin.areas.index')">
                         {{ __('Areas') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('admin.economic-permissions.index')" :active="request()->routeIs('admin.economic-permissions.index')">
+        {{ __('Economic Permissions') }}
+    </x-nav-link>
                 </div>
             </div>
 

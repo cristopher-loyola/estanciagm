@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Area;
 use Illuminate\Http\Request;
 use App\Models\Vacation;
-use App\Models\User;    // Importación para el modelo User
+use App\Models\User;   
+use App\Models\EconomicPermission; 
 
 
 class AreaController extends Controller
@@ -13,12 +14,15 @@ class AreaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $areas = Area::withCount('users')->get();
-        return view('admin.areas.index', compact('areas')); // Debe coincidir con la ruta de la vista
-    }
+// app/Http/Controllers/AreaController.php
+
+public function index()
+{
+    $permissions = EconomicPermission::with('user')->latest()->get();
+    $areas = Area::withCount('users')->get();
     
+    return view('admin.areas.index', compact('areas', 'permissions'));
+}
 
     public function show(Area $area)
     {
