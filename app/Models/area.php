@@ -29,5 +29,9 @@ class Area extends Model
 
     return view('admin.areas.show', compact('area', 'users'));
 }
+public function permisosEconomicos()
+{
+    return $this->hasMany(PermisoEconomico::class);
+}
 
 }

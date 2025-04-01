@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class PermisoEconomicoController extends Controller
 {
+   
     public function index()
     {
         $usuarioId = Auth::id();
@@ -60,4 +61,6 @@ class PermisoEconomicoController extends Controller
 
         return back()->with('success', 'Permiso económico solicitado correctamente. Permisos restantes: ' . (8 - $permisosEsteAno));
     }
+
+    
 }

@@ -15,16 +15,18 @@
                     <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Admin Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.index')">
-                        {{ __('Manage Users') }}
-                    </x-nav-link>
                     <x-nav-link :href="route('admin.areas.index')" :active="request()->routeIs('admin.areas.index')">
-                        {{ __('Areas') }}
+                        {{ __('Vacaciones') }}
                     </x-nav-link>
-
-                    <x-nav-link :href="route('admin.economic-permissions.index')" :active="request()->routeIs('admin.economic-permissions.index')">
-        {{ __('Economic Permissions') }}
-    </x-nav-link>
+                    <!-- <x-nav-link :href="route('admin.economic-permissions.index')" :active="request()->routeIs('admin.economic-permissions.index')">
+                        {{ __('Permisos') }}
+</x-nav-link> -->
+<x-nav-link 
+    :href="route('admin.economic-permissions.select-area')" 
+    :active="request()->routeIs('admin.economic-permissions.select-area')">
+    <i class="nav-icon fas fa-file-invoice-dollar"></i>
+    {{ __('Permisos Económicos') }}
+</x-nav-link>
                 </div>
             </div>
 

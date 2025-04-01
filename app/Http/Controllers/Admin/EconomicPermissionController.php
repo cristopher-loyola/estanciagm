@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;  // Asegúrate de que esta línea esté presente
 use App\Models\PermisoEconomico;
 use Illuminate\Http\Request;
+use App\Models\Area;
 
 
 class EconomicPermissionController extends Controller
@@ -42,9 +43,27 @@ public function destroy($id)
     $permission = PermisoEconomico::findOrFail($id); // Usa el nombre correcto del modelo
     $permission->delete();
     
-    // Redirige a la lista de permisos con mensaje de éxito
-    return redirect()->route('admin.economic-permissions.index')
-                    ->with('success', 'Permiso eliminado correctamente');
+    return back()->with('success', 'Permiso eliminado correctamente');
+}
+
+public function selectArea()
+{
+    $areas = Area::all();
+    return view('admin.economic-permissions.select-area', compact('areas'));
+}
+
+public function byArea(Area $area)
+{
+    // Obtener los IDs de usuarios que pertenecen a esta área
+    $userIds = $area->users()->pluck('id');
+    
+    // Obtener los permisos económicos paginados
+    $permissions = PermisoEconomico::with(['user', 'area'])
+                    ->whereIn('user_id', $userIds)
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(15); // Cambia 15 por el número de items por página que prefieras
+    
+    return view('admin.economic-permissions.index', compact('permissions', 'area'));
 }
 
 }

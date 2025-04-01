@@ -29,4 +29,8 @@ class PermisoEconomico extends Model
     {
         return $this->belongsTo(User::class);  // Relación con la tabla users
     }
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 }

@@ -21,6 +21,7 @@
                     <x-nav-link href="{{ route('permisos-economicos.index') }}">
                         {{ __('Permisos Economicos') }}
                     </x-nav-link>
+                    
                 </div>
             </div>
 
