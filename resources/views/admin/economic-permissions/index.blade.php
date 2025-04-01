@@ -69,22 +69,30 @@
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex justify-end space-x-2">
                                     @if($permission->estado == 'pendiente')
-                                        <a href="{{ route('admin.economic-permissions.approve', $permission->id) }}" 
-                                           class="text-green-600 hover:text-green-900"
-                                           onclick="return confirm('¿Aprobar este permiso?')">
-                                            Aprobar
-                                        </a>
-                                        <a href="{{ route('admin.economic-permissions.reject', $permission->id) }}" 
-                                           class="text-red-600 hover:text-red-900"
-                                           onclick="return confirm('¿Rechazar este permiso?')">
-                                            Rechazar
-                                        </a>
+                                        <!-- Formulario para Aprobar -->
+                                        <form action="{{ route('admin.economic-permissions.approve', $permission->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-green-600 hover:text-green-900" onclick="return confirm('¿Aprobar este permiso?')">
+                                                Aprobar
+                                            </button>
+                                        </form>
+
+                                        <!-- Formulario para Rechazar -->
+                                        <form action="{{ route('admin.economic-permissions.reject', $permission->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('¿Rechazar este permiso?')">
+                                                Rechazar
+                                            </button>
+                                        </form>
                                     @endif
-                                    <a href="{{ route('admin.economic-permissions.destroy', $permission->id) }}" 
-                                       class="text-gray-600 hover:text-gray-900"
-                                       onclick="return confirm('¿Eliminar este permiso?')">
-                                        Eliminar
-                                    </a>
+
+                                    <!-- Formulario para Eliminar -->
+                                    <form action="{{ route('admin.economic-permissions.destroy', $permission->id) }}" method="POST">
+    @csrf
+    @method('DELETE')  <!-- Asegúrate de que esté el método DELETE -->
+    <button type="submit">Eliminar</button>
+</form>
+
                                 </div>
                             </td>
                         </tr>

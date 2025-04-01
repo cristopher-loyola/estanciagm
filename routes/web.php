@@ -9,6 +9,8 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\Auth;
 use App\Http\Controllers\PermisoEconomicoController;
 use App\Http\Controllers\Admin\EconomicPermissionController;
+use App\Http\Controllers\Admin\EconomicPermission;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -95,20 +97,21 @@ Route::post('/vacations/{id}/reject', [VacationController::class, 'reject'])
          Route::post('/permisos-economicos', [PermisoEconomicoController::class, 'store'])->name('permisos-economicos.store');
      });
 
-     Route::prefix('admin')->middleware(['auth', 'isAdmin'])->group(function () {
-        // ... tus otras rutas admin existentes
-        
+     Route::prefix('admin')->middleware(['auth', 'isAdmin'])->name('admin.')->group(function () {
         // Rutas para permisos económicos
-        Route::get('economic-permissions', [\App\Http\Controllers\Admin\EconomicPermissionController::class, 'index'])
-            ->name('admin.economic-permissions.index');
-            
-        Route::post('economic-permissions/{permission}/approve', [\App\Http\Controllers\Admin\EconomicPermissionController::class, 'approve'])
-            ->name('admin.economic-permissions.approve');
-            
-        Route::post('economic-permissions/{permission}/reject', [\App\Http\Controllers\Admin\EconomicPermissionController::class, 'reject'])
-            ->name('admin.economic-permissions.reject');
-            
-        Route::delete('economic-permissions/{permission}', [\App\Http\Controllers\Admin\EconomicPermissionController::class, 'destroy'])
-            ->name('admin.economic-permissions.destroy');
+        Route::get('economic-permissions', [EconomicPermissionController::class, 'index'])
+            ->name('economic-permissions.index');
+    
+        Route::post('economic-permissions/{permission}/approve', [EconomicPermissionController::class, 'approve'])
+            ->name('economic-permissions.approve');
+    
+        Route::post('economic-permissions/{permission}/reject', [EconomicPermissionController::class, 'reject'])
+            ->name('economic-permissions.reject');
+    
+        // Ruta para eliminar un permiso económico
+        Route::delete('economic-permissions/{permission}', [EconomicPermissionController::class, 'destroy'])
+            ->name('economic-permissions.destroy');
     });
+    
+
 });
